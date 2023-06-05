@@ -67,12 +67,16 @@ namespace xmlParser
             var tagContent = content.Substring(start, length).Trim();
 
             var replicaOpen = FindReplicaOpenTag(tagName, tagContent);
+            var replicaClose = regexCloseTag.Matches(tagContent);
 
-            if (replicaOpen > 0)
+            while (replicaOpen != replicaClose.Count)
             {
                 start = openTag.Index + openTag.Length;
                 length = closeTag[replicaOpen].Index - openTag.Length + openTag.Index;
                 tagContent = content.Substring(start, length).Trim();
+
+                replicaOpen = FindReplicaOpenTag(tagName, tagContent);
+                replicaClose = regexCloseTag.Matches(tagContent);
             }
 
             children.Add(new Element(tagName, tagContent, attributes: attributes));
