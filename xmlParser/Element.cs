@@ -10,12 +10,14 @@ namespace xmlParser
         public Dictionary<string, string> attributes = new Dictionary<string, string>();
 
 
-        public Element(string name, string content, string? attributes = null)
+        public Element(string name, string content, List<Element> containerOfElements, string? attributes = null)
         {
             this.content = content;
             this.name = name;
 
-            CreateElement();
+            containerOfElements.Add(this);
+
+            CreateChildrenElement(content, containerOfElements);
             CalculateAttributes(attributes);
         }
 
@@ -42,7 +44,7 @@ namespace xmlParser
             return replicaOpenTags.Count;
         }
 
-        public void CreateElement()
+        public void CreateChildrenElement(string content, List<Element> container)
         {
             Regex regexOpenTag = new Regex(@"<([^>]+)>");
             var openTag = regexOpenTag.Match(content);
@@ -79,12 +81,11 @@ namespace xmlParser
                 replicaClose = regexCloseTag.Matches(tagContent);
             }
 
-            children.Add(new Element(tagName, tagContent, attributes: attributes));
+            children.Add(new Element(tagName, tagContent, container, attributes: attributes));
 
             if (closeTag[replicaOpen].Index + closeTag[replicaOpen].Length != content.Length)
             {
-                content = content.Substring(closeTag[replicaOpen].Index + closeTag[replicaOpen].Length).Trim();
-                CreateElement();
+                CreateChildrenElement(content.Substring(closeTag[replicaOpen].Index + closeTag[replicaOpen].Length).Trim(),container);
             }
         }
 
