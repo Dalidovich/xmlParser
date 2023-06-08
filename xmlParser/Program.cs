@@ -1,8 +1,4 @@
-﻿using System;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Xml.Serialization;
-using xmlParser.Models;
+﻿using xmlParser.Models;
 using xmlParser.Services;
 
 namespace xmlParser
